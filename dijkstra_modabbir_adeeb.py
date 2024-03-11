@@ -41,7 +41,6 @@ def define_obstacle(obs):
                 obs[499-y][x] = blue
             if (x >= 900 and x <= 1100 and y >= 50 and y <= 450 ) and not (x >= 900 and x <= 1020 and y >= 125 and y <= 375):
                 obs[499-y][x] = red
-            # The point (x, y) is inside the outer rectangle but not inside the inner cutout
 
 
             # Rectangle for the Top
@@ -63,9 +62,9 @@ revolution_robot = 499
 
 # Movement for downwards
 def move_down(current_node, canvas):
-    # Creating a new list to store current nodes
+    #Storing current nodes in a new list
     new_node = list(current_node)
-    # substracting 1 from y co-ordinate
+    #Subtracting a unit from the y coordinate
     new_node[1] -= 1 
     if new_node[1]>=0 and (canvas[revolution_robot-new_node[1]][new_node[0]][0])==1:
         return new_node
@@ -99,7 +98,7 @@ def move_right(current_node, canvas):
     else: 
         return None
 
-# Right-down Movement
+# Movement for right-down
 def down_right(current_node, canvas):
     new_node = list(current_node)
     new_node[1] -= 1 
@@ -109,7 +108,7 @@ def down_right(current_node, canvas):
     else: 
         return None
     
-# Left-down Movement
+# Movement for left down
 def down_left(current_node, canvas):
     new_node = list(current_node)
     new_node[1] -= 1 
@@ -119,7 +118,7 @@ def down_left(current_node, canvas):
     else: 
         return None
 
-# Right-up Movement
+# Movement for right up
 def up_right(current_node, canvas):
     new_node = list(current_node)
     new_node[1] += 1 
@@ -128,7 +127,7 @@ def up_right(current_node, canvas):
         return new_node
     else: return None
 
-# Left-up Movement
+# Movement for left up
 def up_left(current_node, canvas):
     new_node = list(current_node)
     new_node[1] += 1 
@@ -138,11 +137,11 @@ def up_left(current_node, canvas):
     else: 
         return None
 
-# Defining function to explore the nodes 
+# Exploring the nodes 
 def explore(new_node, current_node, temp, c_idx, explored_list, cost):
     chk = False
     new_node = tuple(new_node)
-    # Check if the node is already explored
+    # If loop to check if a node has been visited
     if new_node not in explored_list:
         new_node = [current_node[0], current_node[1], new_node, current_node[2]]
         for i in temp:   
@@ -204,18 +203,15 @@ def dijkstra_algorithm(current_node, temp, c_idx, explored_list, canvas):
 ################################### Backtracking Implementation ###########################################
 def backtrack(explored_list, start, goal, canvas):
     # Save the results as a video file
-    out2 = cv2.VideoWriter_fourcc(*'mp4v')
-    result = cv2.VideoWriter('Animation_Video.mp4', out2 ,100,(1200,500))
-    # Create a list to store the back track path
-    track = []
-    # Add goal node to the list
+    result = cv2.VideoWriter('Output_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'),80,(1200,500))
+    track = []  # List to store the back track path
+    # Appending goal node
     track.append(goal)
-    # Display the exploration of nodes on screen
+    # Displaying the exploration of nodes
     for current_node in explored_list:
         canvas[499 - current_node[1], current_node[0]] = green
         cv2.waitKey(1)
         cv2.imshow("Path_Animation", canvas)
-        # Write the changes in the video
         result.write(canvas)
     # Backtracking from goal node to start node
     current_node = tuple(goal)
@@ -230,9 +226,9 @@ def backtrack(explored_list, start, goal, canvas):
     #cv2.imshow("canvas",(start_node , goal_node))
     # Display the back tracked path on screen
     cv2.imshow("Path_Animation", canvas)
+    result.release()
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    result.release()
 
 def main():
     check = False
@@ -259,27 +255,26 @@ def main():
     c_idx = c_int64(0)
     n_s = [0.0, 0, start_node , start_node]
     
-    #creating a list to stores the nodes
+    #List to store the nodes
     temp = []
     
-    # Creating a list to store the explored nodes
+    # List storing all explored nodes
     explored_list = {}
     hq.heappush(temp, n_s)
     hq.heapify(temp)
     
-    # Start timer to record the time taken for the process
+    # Timer to check the time taken to reach goal
     starting_time = time.time()
 
     while (len((temp)) > 0):
         current_node = hq.heappop(temp)
         
-        # Adding to the explored list
+        # Appending to the explored list of the nodes
         explored_list[current_node[2]] = current_node[3]
-        # Checking if the search reached the goal node
+        # Checking to see if it reached goal
         if current_node[2] == tuple(goal_node):
             print("Goal Reached")
-            # Print the time taken to compute the path
-            print("Time taken to reach the goal is ", round(time.time() - starting_time,2)," seconds.")
+            print("Time taken to reach the goal is ", round(time.time() - starting_time,2)," seconds.")   #Time taken to reach the path
             # Performing back tracking to find optimal path
             backtrack(explored_list, start_node, goal_node, canvas)
             check = True
