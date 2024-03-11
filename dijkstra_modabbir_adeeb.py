@@ -204,7 +204,8 @@ def dijkstra_algorithm(current_node, temp, c_idx, explored_list, canvas):
 ################################### Backtracking Implementation ###########################################
 def backtrack(explored_list, start, goal, canvas):
     # Save the results as a video file
-    result = cv2.VideoWriter('Output_video.mp4', cv2.VideoWriter_fourcc(*'MJPG'),1000,(1200,500))
+    out2 = cv2.VideoWriter_fourcc(*'mp4v')
+    result = cv2.VideoWriter('Animation_Video.mp4', out2 ,100,(1200,500))
     # Create a list to store the back track path
     track = []
     # Add goal node to the list
@@ -231,6 +232,7 @@ def backtrack(explored_list, start, goal, canvas):
     cv2.imshow("Path_Animation", canvas)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    result.release()
 
 def main():
     check = False
