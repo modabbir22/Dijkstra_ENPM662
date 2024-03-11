@@ -5,7 +5,7 @@ import math
 from ctypes import c_int64
 import time
 import heapq as hq
-#check12
+
 # Clearance as mentioned of 5 mm
 clearance = 5
 
